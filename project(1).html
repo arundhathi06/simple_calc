@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Calculator</title>
+  <style>
+    body {
+      background-color: #575454;
+      background-size: auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    h1 {
+      color: #fff;
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .calculator {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      width: 350px;
+      box-sizing: border-box;
+    }
+    #display {
+      background-color: #222;
+      color: white;
+      font-size: 2rem;
+      text-align: right;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    button.operator {
+      background-color: #ff9500;
+    }
+    button.operator:hover {
+      background-color: #cc7a00;
+    }
+    button.clear {
+      background-color: #e74c3c;
+    }
+    button.clear:hover {
+      background-color: #c0392b;
+    }
+    button.equals {
+      background-color: #2ecc71;
+    }
+    button.equals:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple Calculator</h1>
+  <div class="calculator">
+    <div id="display">0</div>
+    <div class="buttons">
+      <!-- Trigonometric Functions -->
+      <button class="operator" onclick="calculateSin()">sin</button>
+      <button class="operator" onclick="calculateCos()">cos</button>
+      <button class="operator" onclick="calculateTan()">tan</button>
+      <button class="clear" onclick="clearDisplay()">C</button>
+
+      <!-- Mathematical Functions -->
+      <button class="operator" onclick="calculateSquareRoot()">√</button>
+      <button class="operator" onclick="calculateExponent(2)">x²</button>
+      <button class="operator" onclick="calculateExponent(3)">x³</button>
+      <button class="operator" onclick="setOperation('/')">÷</button>
+
+      <!-- Numbers -->
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="setOperation('*')">×</button>
+
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="operator" onclick="setOperation('-')">-</button>
+
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="operator" onclick="setOperation('+')">+</button>
+
+      <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+      <button onclick="appendNumber('.')">.</button>
+      <button class="equals" onclick="calculateResult()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = '';
+    let previousInput = '';
+    let operation = null;
+    let displayInput = '';
+
+    function appendNumber(number) {
+      if (number === '.' && currentInput.includes('.')) return;
+      currentInput += number;
+      displayInput = previousInput + currentInput;
+      updateDisplay();
+    }
+
+    function setOperation(op) {
+      if (currentInput === '') return;
+      if (previousInput !== '') calculateResult();
+      operation = op;
+      currentInput += op;
+      displayInput = previousInput + currentInput;
+      updateDisplay();
+      previousInput = currentInput;
+      currentInput = '';
+    }
+
+    function calculateResult() {
+      if (operation === null || currentInput === '') return;
+      const prev = parseFloat(previousInput);
+      const curr = parseFloat(currentInput);
+      let result = 0;
+
+      switch (operation) {
+        case '+': result = prev + curr; break;
+        case '-': result = prev - curr; break;
+        case '*': result = prev * curr; break;
+        case '/':
+          if (curr === 0) {
+            alert('Cannot divide by zero!');
+            clearDisplay();
+            return;
+          }
+          result = prev / curr;
+          break;
+      }
+
+      currentInput = result.toString();
+      operation = null;
+      previousInput = '';
+      displayInput = currentInput;
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      previousInput = '';
+      operation = null;
+      displayInput = '';
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('display').innerText = displayInput || '0';
+    }
+
+    function calculateSquareRoot() {
+      if (currentInput === '') return;
+      currentInput = Math.sqrt(parseFloat(currentInput)).toString();
+      displayInput = currentInput;
+      updateDisplay();
+    }
+
+    function calculateExponent(power) {
+      if (currentInput === '') return;
+      currentInput = Math.pow(parseFloat(currentInput), power).toString();
+      displayInput = currentInput;
+      updateDisplay();
+    }
+
+    function calculateSin() {
+      if (currentInput === '') return;
+      currentInput = Math.sin(parseFloat(currentInput)).toString();
+      displayInput = currentInput;
+      updateDisplay();
+    }
+
+    function calculateCos() {
+      if (currentInput === '') return;
+      currentInput = Math.cos(parseFloat(currentInput)).toString();
+      displayInput = currentInput;
+      updateDisplay();
+    }
+
+    function calculateTan() {
+      if (currentInput === '') return;
+      currentInput = Math.tan(parseFloat(currentInput)).toString();
+      displayInput = currentInput;
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>
